@@ -1,0 +1,100 @@
+-- FUNCTION: public.get_allproducts()
+
+-- DROP FUNCTION IF EXISTS public.get_allproducts();
+
+CREATE OR REPLACE FUNCTION public.get_allproducts(
+	)
+    RETURNS TABLE(p_id integer, p_name text, p_price double precision) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    begin
+    return query
+       SELECT "Id"::int, "Name"::text varyating, "Price"
+	FROM public."Products";
+    end;
+$BODY$;
+
+ALTER FUNCTION public.get_allproducts()
+    OWNER TO postgres;
+	
+	
+-- FUNCTION: public.get_productdetail(integer)
+
+-- DROP FUNCTION IF EXISTS public.get_productdetail(integer);
+
+CREATE OR REPLACE FUNCTION public.get_productdetail(
+	p1_id integer)
+    RETURNS TABLE(p_id integer, p_name text, p_price double precision) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    begin
+    return query
+       SELECT "Id"::int, "Name"::text, "Price"
+	FROM public."Products" WHERE "Id" = p1_id;
+    end;
+$BODY$;
+
+ALTER FUNCTION public.get_productdetail(integer)
+    OWNER TO postgres;
+
+
+-- PROCEDURE: public.delete_product(integer)
+
+-- DROP PROCEDURE IF EXISTS public.delete_product(integer);
+
+CREATE OR REPLACE PROCEDURE public.delete_product(
+	IN p_id integer)
+LANGUAGE 'plpgsql'
+AS $BODY$
+    begin
+        DELETE FROM public."Products"
+	WHERE "Id" = p_id;
+    end;
+$BODY$;
+ALTER PROCEDURE public.delete_product(integer)
+    OWNER TO postgres;
+
+
+
+-- PROCEDURE: public.save_product(text, double precision)
+
+-- DROP PROCEDURE IF EXISTS public.save_product(text, double precision);
+
+CREATE OR REPLACE PROCEDURE public.save_product(
+	IN p_name text,
+	IN p_price double precision)
+LANGUAGE 'plpgsql'
+AS $BODY$
+    begin
+        insert into public."Products" ("Name", "Price") values (p_name, p_price);
+    end;
+$BODY$;
+ALTER PROCEDURE public.save_product(text, double precision)
+    OWNER TO postgres;
+
+
+-- PROCEDURE: public.update_product(text, double precision, integer)
+
+-- DROP PROCEDURE IF EXISTS public.update_product(text, double precision, integer);
+
+CREATE OR REPLACE PROCEDURE public.update_product(
+	IN p_name text,
+	IN p_price double precision,
+	IN p_id integer)
+LANGUAGE 'plpgsql'
+AS $BODY$
+    begin
+        update public."Products" set "Name" = p_name, "Price" = p_price where id = p_id ;
+    end;
+$BODY$;
+ALTER PROCEDURE public.update_product(text, double precision, integer)
+    OWNER TO postgres;
+
